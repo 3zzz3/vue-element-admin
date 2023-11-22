@@ -79,7 +79,7 @@ export const constantRoutes = [
         path: 'dashboard',
         component: () => import('@/views/dashboard/index'),
         name: 'Dashboard',
-        meta: { title: '首页', icon: 'dashboard', affix: true }
+        meta: { title: '制造执行 MES', icon: 'dashboard', affix: true }
       }
     ]
   }
@@ -129,6 +129,54 @@ export const constantRoutes = [
  * the routes that need to be dynamically loaded based on user roles
  */
 export const asyncRoutes = [
+  // 开始
+  {
+    path: '/zlgl',
+    component: Layout,
+    redirect: '/zlgl',
+    alwaysShow: true,
+    name: 'zlglManage',
+    meta: {
+      title: '质量管理',
+      icon: 'el-icon-s-tools',
+      roles: ['admin', 'editor']
+    },
+    children: [
+      {
+        path: 'cpjy',
+        component: () => import('@/views/zlgl/cpjy'),
+        name: 'cpjyManage',
+        meta: {
+          title: '产品检验',
+          roles: ['admin', 'editor']
+        }
+      },
+      {
+        path: 'lljy',
+        component: () => import('@/views/zlgl/lljy'),
+        name: 'lljyManage',
+        meta: {
+          title: '来料检验',
+          roles: ['admin', 'editor']
+        }
+      }
+    ]
+  },
+  {
+    path: '/scwgd',
+    component: Layout,
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/scwgd/index'),
+        name: 'scwgdManage',
+        meta: { title: '生产完工单',
+          icon: 'el-icon-document-checked',
+          noCache: true }
+      }
+    ]
+  },
+  // 结束
   // {
   //   path: '/permission',
   //   component: Layout,
