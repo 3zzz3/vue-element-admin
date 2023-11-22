@@ -18,7 +18,7 @@
       <el-button class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-edit" @click="handleCreate">
         新增
       </el-button>
-      <el-button class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-refresh">
+      <el-button class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-refresh" @click="handleQuery">
         重置
       </el-button>
     </div>
@@ -248,9 +248,11 @@ export default {
       dialogPvVisible: false,
       pvData: [],
       rules: {
-        type: [{ required: true, message: 'type is required', trigger: 'change' }],
-        timestamp: [{ type: 'date', required: true, message: 'timestamp is required', trigger: 'change' }],
-        title: [{ required: true, message: 'title is required', trigger: 'blur' }]
+        wanGongDan: [{ required: true, message: '必填', trigger: 'blur' }],
+        jianYanBiaoZhun: [{ required: true, message: '必填', trigger: 'blur' }],
+        chouJianShu: [{ required: true, message: '必填', trigger: 'blur' }],
+        jianYanZhi: [{ required: true, message: '必填', trigger: 'blur' }],
+        jianYanJieGuo: [{ required: true, message: '必填', trigger: 'blur' }]
       },
       downloadLoading: false
     }
@@ -259,6 +261,21 @@ export default {
     this.getList()
   },
   methods: {
+    handleQuery() {
+      this.listQuery = {
+        liuShui: '',
+        wanGongDan: '',
+        jiHua: '',
+        zuoYe: '',
+        ChanPing: '',
+        jianYan: '',
+        ShengChanDate: '',
+        jianYanXiang: '',
+        jianYanJieGuo: '',
+        jianYanRen: '',
+        jianYantime: ''
+      }
+    },
     getList() {
       this.listLoading = true
       fetchList(this.listQuery).then(response => {

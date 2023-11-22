@@ -12,7 +12,7 @@
       <el-button class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-edit" @click="handleCreate">
         新增
       </el-button>
-      <el-button class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-refresh">
+      <el-button class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-refresh" @click="handleQuery">
         重置
       </el-button>
     </div>
@@ -118,10 +118,10 @@
 
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
       <el-form ref="dataForm" :rules="rules" :model="temp" label-position="left" label-width="90px" style="width: 400px; margin-left:50px;">
-        <el-form-item label="领料编号" prop="wanGongDan">
+        <el-form-item label="领料编号" prop="lingLiaoDanHao">
           <el-input v-model="temp.lingLiaoDanHao" />
         </el-form-item>
-        <el-form-item label="物料名称" prop="jianYanBiaoZhun">
+        <el-form-item label="物料名称" prop="wuLiaoMingChen">
           <el-input v-model="temp.wuLiaoMingChen" />
         </el-form-item>
         <el-form-item label="抽检数量" prop="chouJianShu">
@@ -232,9 +232,11 @@ export default {
       dialogPvVisible: false,
       pvData: [],
       rules: {
-        type: [{ required: true, message: 'type is required', trigger: 'change' }],
-        timestamp: [{ type: 'date', required: true, message: 'timestamp is required', trigger: 'change' }],
-        title: [{ required: true, message: 'title is required', trigger: 'blur' }]
+        lingLiaoDanHao: [{ required: true, message: '必填', trigger: 'blur' }],
+        wuLiaoMingChen: [{ required: true, message: '必填', trigger: 'blur' }],
+        chouJianShu: [{ required: true, message: '必填', trigger: 'blur' }],
+        jianYanZhi: [{ required: true, message: '必填', trigger: 'blur' }],
+        jianYanJieGuo: [{ required: true, message: '必填', trigger: 'blur' }]
       },
       downloadLoading: false
     }
@@ -243,6 +245,21 @@ export default {
     this.getList()
   },
   methods: {
+    handleQuery() {
+      this.listQuery = {
+        liuShui: '',
+        wanGongDan: '',
+        jiHua: '',
+        zuoYe: '',
+        ChanPing: '',
+        jianYan: '',
+        ShengChanDate: '',
+        jianYanXiang: '',
+        jianYanJieGuo: '',
+        jianYanRen: '',
+        jianYantime: ''
+      }
+    },
     getList() {
       this.listLoading = true
       fetchList(this.listQuery).then(response => {
