@@ -4,9 +4,28 @@
       <el-input v-model="listQuery.shengChanJiHua" placeholder="生产计划" style="width: 210px;" class="filter-item" @keyup.enter.native="handleFilter" />
       <el-input v-model="listQuery.shengChanZuoYe" placeholder="生产作业" style="width: 210px;" class="filter-item" @keyup.enter.native="handleFilter" />
       <el-input v-model="listQuery.chanPing" placeholder="产品" style="width: 210px;" class="filter-item" @keyup.enter.native="handleFilter" />
-      <el-input v-model="listQuery.wanGongRiQi" placeholder="完工日期" style="width: 210px;" class="filter-item" @keyup.enter.native="handleFilter" />
+      <el-date-picker
+        v-model="listQuery.wanGongRiQi"
+        style="width: 400px;"
+        class="filter-item"
+        type="daterange"
+        align="right"
+        unlink-panels
+        range-separator="至"
+        start-placeholder="完工开始日期"
+        end-placeholder="完工结束日期"
+        :picker-options="wanGongRiQi"
+        @keyup.enter.native="handleFilter"
+      />
       <el-input v-model="listQuery.shengChanPiHao" placeholder="生产批号" style="width: 210px;" class="filter-item" @keyup.enter.native="handleFilter" />
-      <el-input v-model="listQuery.zhuangTai" placeholder="状态" style="width: 210px;" class="filter-item" @keyup.enter.native="handleFilter" />
+      <el-select v-model="listQuery.zhuangTai" style="width: 200px;" class="filter-item" placeholder="状态" @keyup.enter.native="handleFilter">
+        <el-option
+          v-for="item in options"
+          :key="item.value"
+          :label="item.label"
+          :value="item.value"
+        />
+      </el-select>
       <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">
         搜索
       </el-button>
@@ -208,7 +227,52 @@ export default {
       rules: {
         shengChanPiHao: [{ required: true, message: '必填', trigger: 'blur' }]
       },
-      downloadLoading: false
+      downloadLoading: false,
+      ShengChanDate: {
+        shortcuts: [{
+          text: '最近一周',
+          onClick(picker) {
+            const end = new Date()
+            const start = new Date()
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * 7)
+            picker.$emit('pick', [start, end])
+          }
+        }, {
+          text: '最近一个月',
+          onClick(picker) {
+            const end = new Date()
+            const start = new Date()
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * 30)
+            picker.$emit('pick', [start, end])
+          }
+        }, {
+          text: '最近三个月',
+          onClick(picker) {
+            const end = new Date()
+            const start = new Date()
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * 90)
+            picker.$emit('pick', [start, end])
+          }
+        }]
+      },
+      value1: '',
+      options: [{
+        value: '选项1',
+        label: '未入库'
+      }, {
+        value: '选项2',
+        label: '入库中'
+      }, {
+        value: '选项3',
+        label: '已入库'
+      }, {
+        value: '选项4',
+        label: '检验合格'
+      }, {
+        value: '选项5',
+        label: '检验未合格'
+      }],
+      value: ''
     }
   },
   created() {

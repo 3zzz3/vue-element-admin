@@ -5,7 +5,18 @@
       <el-input v-model="listQuery.lingLiaoDanHao" placeholder="领料单号" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />
       <el-input v-model="listQuery.wuLiaoMingChen" placeholder="物料名称" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />
       <el-input v-model="listQuery.jianYanRen" placeholder="检验人" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />
-      <el-input v-model="listQuery.jianYantime" placeholder="检验时间" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />
+      <el-date-picker
+        v-model="listQuery.jianYantime"
+        style="width: 400px;"
+        class="filter-item"
+        type="datetimerange"
+        :picker-options="jianYantime"
+        range-separator="至"
+        start-placeholder="开始检验时间"
+        end-placeholder="结束检验时间"
+        align="right"
+        @keyup.enter.native="handleFilter"
+      />
       <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">
         搜索
       </el-button>
@@ -141,6 +152,9 @@
         <el-button @click="dialogFormVisible = false">
           取消
         </el-button>
+        <el-button type="info">
+          选择
+        </el-button>
         <el-button type="primary" @click="dialogStatus==='create'?createData():updateData()">
           确定
         </el-button>
@@ -238,7 +252,35 @@ export default {
         jianYanZhi: [{ required: true, message: '必填', trigger: 'blur' }],
         jianYanJieGuo: [{ required: true, message: '必填', trigger: 'blur' }]
       },
-      downloadLoading: false
+      downloadLoading: false,
+      jianYantime: {
+        shortcuts: [{
+          text: '最近一周',
+          onClick(picker) {
+            const end = new Date()
+            const start = new Date()
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * 7)
+            picker.$emit('pick', [start, end])
+          }
+        }, {
+          text: '最近一个月',
+          onClick(picker) {
+            const end = new Date()
+            const start = new Date()
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * 30)
+            picker.$emit('pick', [start, end])
+          }
+        }, {
+          text: '最近三个月',
+          onClick(picker) {
+            const end = new Date()
+            const start = new Date()
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * 90)
+            picker.$emit('pick', [start, end])
+          }
+        }]
+      },
+      value2: ''
     }
   },
   created() {

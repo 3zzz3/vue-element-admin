@@ -1,17 +1,47 @@
 <template>
   <div class="app-container">
     <div class="filter-container">
-      <el-input v-model="listQuery.liuShui" placeholder="流水号" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />
-      <el-input v-model="listQuery.wanGongDan" placeholder="完工单号" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />
-      <el-input v-model="listQuery.jiHua" placeholder="计划编号" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />
-      <el-input v-model="listQuery.zuoYe" placeholder="作业名称" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />
+      <el-input v-model="listQuery.swiftNumber" placeholder="流水号" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />
+      <el-input v-model="listQuery.finishNumber" placeholder="完工单号" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />
+      <el-input v-model="listQuery.planNumber" placeholder="计划编号" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />
+      <el-input v-model="listQuery.homeworkName" placeholder="作业名称" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />
       <el-input v-model="listQuery.ChanPing" placeholder="产品名称" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />
       <el-input v-model="listQuery.jianYan" placeholder="检验批次" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />
-      <el-input v-model="listQuery.ShengChanDate" placeholder="生产日期" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />
+      <el-date-picker
+        v-model="listQuery.ShengChanDate"
+        style="width: 400px;"
+        class="filter-item"
+        type="daterange"
+        align="right"
+        unlink-panels
+        range-separator="至"
+        start-placeholder="开始生产日期"
+        end-placeholder="结束生产日期"
+        :picker-options="ShengChanDate"
+        @keyup.enter.native="handleFilter"
+      />
       <el-input v-model="listQuery.jianYanXiang" placeholder="检验项" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />
-      <el-input v-model="listQuery.jianYanJieGuo" placeholder="检验结果" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />
+      <el-select v-model="listQuery.jianYanJieGuo" style="width: 200px;" class="filter-item" placeholder="检验结果" @keyup.enter.native="handleFilter">
+        <el-option
+          v-for="item in options"
+          :key="item.value"
+          :label="item.label"
+          :value="item.value"
+        />
+      </el-select>
       <el-input v-model="listQuery.jianYanRen" placeholder="检验人" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />
-      <el-input v-model="listQuery.jianYantime" placeholder="检验时间" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />
+      <el-date-picker
+        v-model="listQuery.jianYantime"
+        style="width: 400px;"
+        class="filter-item"
+        type="datetimerange"
+        :picker-options="jianYantime"
+        range-separator="至"
+        start-placeholder="开始检验时间"
+        end-placeholder="结束检验时间"
+        align="right"
+        @keyup.enter.native="handleFilter"
+      />
       <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">
         搜索
       </el-button>
@@ -40,27 +70,27 @@
       </el-table-column>
       <el-table-column label="流水号" prop="id" align="center" width="100">
         <template slot-scope="{row}">
-          <span>{{ row.liuShui }}</span>
+          <span>{{ row.swiftNumber }}</span>
         </template>
       </el-table-column>
       <el-table-column label="计划编号" prop="id" align="center" width="100">
         <template slot-scope="{row}">
-          <span>{{ row.jiHua }}</span>
+          <span>{{ row.planNumber }}</span>
         </template>
       </el-table-column>
       <el-table-column label="完工单号" prop="id" align="center" width="100">
         <template slot-scope="{row}">
-          <span>{{ row.wanGongDan }}</span>
+          <span>{{ row.finishNumber }}</span>
         </template>
       </el-table-column>
       <el-table-column label="作业名称" prop="id" align="center" width="100">
         <template slot-scope="{row}">
-          <span>{{ row.zuoYe }}</span>
+          <span>{{ row.homeworkName }}</span>
         </template>
       </el-table-column>
       <el-table-column label="生产线名称" prop="id" align="center" width="100">
         <template slot-scope="{row}">
-          <span>{{ row.shengChanXian }}</span>
+          <span>{{ row.productLineName }}</span>
         </template>
       </el-table-column>
       <el-table-column label="检验批次" prop="id" align="center" width="100">
@@ -134,8 +164,8 @@
 
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
       <el-form ref="dataForm" :rules="rules" :model="temp" label-position="left" label-width="90px" style="width: 400px; margin-left:50px;">
-        <el-form-item label="完工单号" prop="wanGongDan">
-          <el-input v-model="temp.wanGongDan" />
+        <el-form-item label="完工单号" prop="finishNumber">
+          <el-input v-model="temp.finishNumber" />
         </el-form-item>
         <el-form-item label="检验标准" prop="jianYanBiaoZhun">
           <el-input v-model="temp.jianYanBiaoZhun" />
@@ -156,6 +186,9 @@
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">
           取消
+        </el-button>
+        <el-button type="info">
+          选择
         </el-button>
         <el-button type="primary" @click="dialogStatus==='create'?createData():updateData()">
           确定
@@ -248,13 +281,77 @@ export default {
       dialogPvVisible: false,
       pvData: [],
       rules: {
-        wanGongDan: [{ required: true, message: '必填', trigger: 'blur' }],
+        finishNumber: [{ required: true, message: '必填', trigger: 'blur' }],
         jianYanBiaoZhun: [{ required: true, message: '必填', trigger: 'blur' }],
         chouJianShu: [{ required: true, message: '必填', trigger: 'blur' }],
         jianYanZhi: [{ required: true, message: '必填', trigger: 'blur' }],
         jianYanJieGuo: [{ required: true, message: '必填', trigger: 'blur' }]
       },
-      downloadLoading: false
+      downloadLoading: false,
+      ShengChanDate: {
+        shortcuts: [{
+          text: '最近一周',
+          onClick(picker) {
+            const end = new Date()
+            const start = new Date()
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * 7)
+            picker.$emit('pick', [start, end])
+          }
+        }, {
+          text: '最近一个月',
+          onClick(picker) {
+            const end = new Date()
+            const start = new Date()
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * 30)
+            picker.$emit('pick', [start, end])
+          }
+        }, {
+          text: '最近三个月',
+          onClick(picker) {
+            const end = new Date()
+            const start = new Date()
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * 90)
+            picker.$emit('pick', [start, end])
+          }
+        }]
+      },
+      value1: '',
+      options: [{
+        value: '选项1',
+        label: '合格'
+      }, {
+        value: '选项2',
+        label: '不合格'
+      }],
+      value: '',
+      jianYantime: {
+        shortcuts: [{
+          text: '最近一周',
+          onClick(picker) {
+            const end = new Date()
+            const start = new Date()
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * 7)
+            picker.$emit('pick', [start, end])
+          }
+        }, {
+          text: '最近一个月',
+          onClick(picker) {
+            const end = new Date()
+            const start = new Date()
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * 30)
+            picker.$emit('pick', [start, end])
+          }
+        }, {
+          text: '最近三个月',
+          onClick(picker) {
+            const end = new Date()
+            const start = new Date()
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * 90)
+            picker.$emit('pick', [start, end])
+          }
+        }]
+      },
+      value2: ''
     }
   },
   created() {
@@ -263,10 +360,10 @@ export default {
   methods: {
     handleQuery() {
       this.listQuery = {
-        liuShui: '',
-        wanGongDan: '',
-        jiHua: '',
-        zuoYe: '',
+        swiftNumber: '',
+        finishNumber: '',
+        planNumber: '',
+        homeworkName: '',
         ChanPing: '',
         jianYan: '',
         ShengChanDate: '',
@@ -279,8 +376,8 @@ export default {
     getList() {
       this.listLoading = true
       fetchList(this.listQuery).then(response => {
-        this.list = response.data.items
-        this.total = response.data.total
+        this.list = response.data
+        // this.total = response.data.total
 
         // Just to simulate the time of the request
         setTimeout(() => {
